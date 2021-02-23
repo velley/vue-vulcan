@@ -1,0 +1,10 @@
+examples/
+src/
+# packages/
+public/
+vue.config.js
+vite.config.js
+postcss.config.js
+babel.config.js
+*.map
+*.html

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "strict": false,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "declaration": true, // 生成定义文件
+    "declarationDir": "dist",
+    "lib": ["esnext", "dom"],
+    "types": ["vite/client"],
+    "typeRoots": ["./node_modules/@types"]
+  },
+  "include": ["demo/**/*.ts", "demo/**/*.d.ts", "demo/**/*.tsx", "demo/**/*.vue"]
+}
