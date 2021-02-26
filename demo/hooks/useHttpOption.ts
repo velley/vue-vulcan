@@ -1,0 +1,7 @@
+
+// export useHttpOption() {
+  
+//   return {
+//     baseUrl: ''
+//   }
+// }

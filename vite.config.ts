@@ -2,7 +2,9 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
-import typescript from 'rollup-plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
+import dts from 'rollup-plugin-dts';
+import babel from 'rollup-plugin-babel';
 import path from 'path';
 
 const getPath = _path => path.resolve(__dirname, _path)
@@ -10,6 +12,15 @@ const getPath = _path => path.resolve(__dirname, _path)
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  server: {
+    proxy: {
+      '/recommend_api': {
+        target: 'https://api.juejin.cn/',
+        changeOrigin: true,
+        // rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'packages/index.ts'),
@@ -24,13 +35,14 @@ export default defineConfig({
           vue: 'Vue'
         }
       },
-      plugins: [ // 打包插件
+      plugins: [
         resolve(), // 查找和打包node_modules中的第三方模块
-        commonjs(), // 将 CommonJS 转换成 ES2015 模块供 Rollup 处理
-        typescript({
-          "declaration": true, // 生成定义文件
-          tsconfig: getPath('./tsconfig.json'), // 导入本地ts配置
-        }), // 解析TypeScript      
+        commonjs({extensions:['.ts']}), // 将 CommonJS 转换成 ES2015 模块供 Rollup 处理
+        // es(),
+        // dts(),
+        // es()
+        typescript(),
+        // dts()
       ]
     }
   }

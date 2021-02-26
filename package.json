@@ -1,7 +1,7 @@
 {
   "name": "vue-vulcan",
   "version": "0.1.2",
-  "main": "dist/vue-vulcan.umd.js",
+  "main": "packages/index.ts",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -18,11 +18,14 @@
     "@types/node": "^14.14.31",
     "@vitejs/plugin-vue": "^1.1.4",
     "@vue/compiler-sfc": "^3.0.5",
+    "esbuild": "^0.8.50",
     "rollup": "^2.39.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-dts": "^2.0.1",
+    "rollup-plugin-esbuild": "^2.6.1",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-ts": "^1.3.7",
     "rollup-plugin-typescript": "^1.0.1",
     "rollup-plugin-typescript2": "^0.30.0",
     "tslib": "^2.1.0",

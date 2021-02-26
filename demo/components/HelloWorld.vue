@@ -29,21 +29,25 @@
   </p>
 </template>
 
-<script lang="ts">
-import { ref, defineComponent } from 'vue'
-export default defineComponent({
-  name: 'HelloWorld',
-  props: {
-    msg: {
-      type: String,
-      required: true
+<script lang="ts" setup>
+import { defineProps } from 'vue';
+import { useRequest, useState } from '../../packages';
+
+const { msg } = defineProps({msg: String});
+const [count] = useState(1);
+const [res]   = useRequest(
+  '/recommend_api/v1/article/recommend_all_feed',
+  {
+    method: 'GET',
+    body: {
+      client_type: 2608,
+      cursor: "0",
+      id_type: 2,
+      limit: 20,
+      sort_type: 200
     }
-  },
-  setup: () => {
-    const count = ref(0)
-    return { count }
   }
-})
+);
 </script>
 
 <style scoped>
