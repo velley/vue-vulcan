@@ -36,15 +36,12 @@ import { useRequest, useState } from '../../packages';
 const { msg } = defineProps({msg: String});
 const [count] = useState(1);
 const [res]   = useRequest(
-  '/recommend_api/v1/article/recommend_all_feed',
+  '/index.php/api/common/loginIn',
   {
-    method: 'GET',
-    body: {
-      client_type: 2608,
-      cursor: "0",
-      id_type: 2,
-      limit: 20,
-      sort_type: 200
+    method: 'POST',
+    data: {
+      login_id: "hrwx1",
+      login_password: "123456"
     }
   }
 );

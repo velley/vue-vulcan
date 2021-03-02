@@ -1,6 +1,6 @@
 {
   "name": "vue-vulcan",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "main": "packages/index.ts",
   "scripts": {
     "dev": "vite",
@@ -8,6 +8,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "vue": "^3.0.5"
   },
   "devDependencies": {

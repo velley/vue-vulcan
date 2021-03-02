@@ -4,11 +4,15 @@
 </template>
 
 <script lang="ts" setup>
+import { useProviders } from '../packages';
 import HelloWorld from './components/HelloWorld.vue';
+import { useCustomeRequest } from './hooks/useCustomeRequest'
+import { useHttpIntercept } from './hooks/useHttpIntercept';
 
-// useProviders(
-
-// )
+useProviders(
+  // useCustomeRequest,
+  useHttpIntercept
+)
 
 </script>
 

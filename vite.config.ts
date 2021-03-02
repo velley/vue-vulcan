@@ -14,8 +14,8 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     proxy: {
-      '/recommend_api': {
-        target: 'https://api.juejin.cn/',
+      '/index.php': {
+        target: 'http://devserver.anyremote.cn/',
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, '')
       }

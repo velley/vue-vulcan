@@ -2,7 +2,7 @@ import { onMounted, Ref, UnwrapRef } from "vue";
 import { pluckObj } from "../utils/pluckObj";
 import { useState } from "../common/useState";
 import { useInjector } from "../ioc/useInjector";
-import { RequesterFunc, HttpIntercept, RequestOptions } from "./interface";
+import { RequesterFunc, HttpIntercept, RequestOptions, RequestStatus } from "./interface";
 import { CUSTOME_REQUESTER, HTTP_INTERCEPT, HTTP_OPTIONS } from "./token";
 import { objectToUrlSearch } from "../utils/objectToUrlSearch";
 
@@ -10,49 +10,67 @@ const defaultOptions: RequestOptions = {
   auto: true,
   pluck: ['data'],
   method: 'GET',
-  baseUrl: ''
+  baseUrl: '',
+  headers: {}  
 };
 
 export function useRequest<D>(
   url: string, 
   options?: RequestOptions
-): [Ref<UnwrapRef<D>>, () => Promise<UnwrapRef<D>>] {
-  const [resData, setData]   = useState<D>(null);
-  const intercept            = useInjector<HttpIntercept>(HTTP_INTERCEPT, 'optional');  
-  const globalOptions        = useInjector<RequestOptions>(HTTP_OPTIONS, 'optional');
-  const customeRequester     = useInjector<RequesterFunc>(CUSTOME_REQUESTER, 'optional');
+): [Ref<UnwrapRef<D>>, (data?: any) => Promise<UnwrapRef<D>>, Ref<RequestStatus>] {
+  const [resData, setData]      = useState<D>(null);
+  const [requestStatus, setStatus] = useState<RequestStatus>('ready');
+  const intercept               = useInjector<HttpIntercept>(HTTP_INTERCEPT, 'optional');  
+  const globalOptions           = useInjector<RequestOptions>(HTTP_OPTIONS, 'optional');
+  const customeRequester        = useInjector<RequesterFunc>(CUSTOME_REQUESTER, 'optional');
 
   const myOptions: RequestOptions = Object.assign(defaultOptions, globalOptions, options);
 
-  const request = () => {
-    const req  = customeRequester || fetch;
+  const request = (newData: object = {}) => {
+    setStatus('pending');
+    const req  = customeRequester || (fetch as RequesterFunc) ;
     return new Promise<RequestOptions>((resolve, reject) => {
       if(!intercept) {
         resolve(myOptions)
       } else {        
         intercept?.requestIntercept(myOptions)
-          .then( reqOptions => resolve(reqOptions), _ => reject(null) );
+          .then( reqOptions => resolve(reqOptions), err => {reject(err); setStatus('failed')} );
       }      
-    }).then( reqOptions => {     
+    }).then( reqOptions => {           
       let f_url = myOptions.baseUrl + url;
-      if(reqOptions.method === 'GET') { 
-        const searchKeys = `?${objectToUrlSearch(reqOptions.body)}`;
-        f_url += searchKeys;
-        delete reqOptions.body;
+      let data = Object.assign(myOptions.data, newData)
+      if(['GET', 'HEAD'].includes(reqOptions.method)) { 
+        const searchKeys = `?${objectToUrlSearch(data)}`;
+        f_url += searchKeys;        
       } else {
-        intercept && (reqOptions.body = JSON.stringify(reqOptions.body))      
-      }
-      
+        !customeRequester && (reqOptions.body = JSON.stringify(data))      
+      }      
+      myOptions.data = data;
       return req(f_url, reqOptions);
     }).then( res => {
-      if(res.ok) {
-        if(intercept) intercept?.responseIntercept(res);
-        const data = pluckObj(res.body, ...myOptions.pluck) as UnwrapRef<D>;
+      if(intercept && intercept?.responseIntercept) {  
+        return intercept.responseIntercept(res).then( data => {
+          console.log('inte res data', data) 
+          setData(data);
+          return data
+        })
+      };
+
+      if(customeRequester) {
+        console.log('custome res', res)
+        const data = pluckObj(res.data, ...myOptions.pluck) as UnwrapRef<D>;
+        console.log('filter', data)
         setData(data);
-        return data;
+        return data; 
       } else {
-        console.error(res.statusText)
-      }      
+        res.json().then( body => {
+          console.log('body', body)
+          const data = pluckObj(body, ...myOptions.pluck) as UnwrapRef<D>;
+          console.log('filter', data)
+          setData(data);
+          return data; 
+        })
+      }               
     })
   }
 
@@ -60,5 +78,5 @@ export function useRequest<D>(
     if(myOptions.auto) request();
   })
 
-  return [resData, request]
+  return [resData, request, requestStatus]
 }
