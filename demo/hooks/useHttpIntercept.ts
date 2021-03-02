@@ -1,4 +1,5 @@
-import { HttpIntercept, HttpResponse, HTTP_INTERCEPT, RequestOptions } from "../../packages";
+import { HTTP_INTERCEPT } from "../../packages";
+import { HttpIntercept, HttpResponse, RequestOptions } from "../../packages/http/domain";
 
 export function useHttpIntercept(): HttpIntercept {
 

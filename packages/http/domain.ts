@@ -1,3 +1,4 @@
+
 export interface HttpIntercept {
   requestIntercept?: (request: RequestOptions) => Promise<RequestOptions>;
   responseIntercept?: (res: any) => Promise<any>;
@@ -13,6 +14,7 @@ export interface RequesterFunc {
 
 export interface RequestOptions<B = any> {
   baseUrl?: string;
+  url?: string;
   body?: B;
   data?: B;
   auto?: boolean;

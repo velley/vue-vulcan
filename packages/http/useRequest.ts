@@ -2,7 +2,7 @@ import { onMounted, Ref, UnwrapRef } from "vue";
 import { pluckObj } from "../utils/pluckObj";
 import { useState } from "../common/useState";
 import { useInjector } from "../ioc/useInjector";
-import { RequesterFunc, HttpIntercept, RequestOptions, RequestStatus } from "./interface";
+import { RequesterFunc, HttpIntercept, RequestOptions, RequestStatus } from "./domain";
 import { CUSTOME_REQUESTER, HTTP_INTERCEPT, HTTP_OPTIONS } from "./token";
 import { objectToUrlSearch } from "../utils/objectToUrlSearch";
 
@@ -18,13 +18,13 @@ export function useRequest<D>(
   url: string, 
   options?: RequestOptions
 ): [Ref<UnwrapRef<D>>, (data?: any) => Promise<UnwrapRef<D>>, Ref<RequestStatus>] {
-  const [resData, setData]      = useState<D>(null);
+  const [resData, setData]         = useState<D>(null);
   const [requestStatus, setStatus] = useState<RequestStatus>('ready');
-  const intercept               = useInjector<HttpIntercept>(HTTP_INTERCEPT, 'optional');  
-  const globalOptions           = useInjector<RequestOptions>(HTTP_OPTIONS, 'optional');
-  const customeRequester        = useInjector<RequesterFunc>(CUSTOME_REQUESTER, 'optional');
+  const intercept                  = useInjector<HttpIntercept>(HTTP_INTERCEPT, 'optional');  
+  const globalOptions              = useInjector<RequestOptions>(HTTP_OPTIONS, 'optional');
+  const customeRequester           = useInjector<RequesterFunc>(CUSTOME_REQUESTER, 'optional');
 
-  const myOptions: RequestOptions = Object.assign(defaultOptions, globalOptions, options);
+  const myOptions = Object.assign(defaultOptions, globalOptions, options);
 
   const request = (newData: object = {}) => {
     setStatus('pending');
@@ -33,7 +33,7 @@ export function useRequest<D>(
       if(!intercept) {
         resolve(myOptions)
       } else {        
-        intercept?.requestIntercept(myOptions)
+        intercept?.requestIntercept({ ...myOptions, url })
           .then( reqOptions => resolve(reqOptions), err => {reject(err); setStatus('failed')} );
       }      
     }).then( reqOptions => {           
@@ -43,7 +43,7 @@ export function useRequest<D>(
         const searchKeys = `?${objectToUrlSearch(data)}`;
         f_url += searchKeys;        
       } else {
-        !customeRequester && (reqOptions.body = JSON.stringify(data))      
+        !customeRequester && (reqOptions.body = JSON.stringify(data))
       }      
       myOptions.data = data;
       return req(f_url, reqOptions);

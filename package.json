@@ -1,7 +1,16 @@
 {
   "name": "vue-vulcan",
-  "version": "0.1.4",
-  "main": "packages/index.ts",
+  "version": "0.2.2",
+  "files": ["dist"],
+  "main": "dist/vue-vulcan.umd.js",
+  "module": "dist/vue-vulcan.es.js",
+  "typings": "dist/packages/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-vulcan.es.js",
+      "require": "./dist/vue-vulcan.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

@@ -1,7 +1,9 @@
 examples/
+demo/
 src/
-# packages/
+packages/
 public/
+dist/demo
 vue.config.js
 vite.config.js
 postcss.config.js
