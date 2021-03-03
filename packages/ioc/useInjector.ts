@@ -1,5 +1,5 @@
-import { FunctionalStore } from "./interface";
-import { inject } from "vue";
+import { FunctionalStore, ProvideComponent } from "./interface";
+import { getCurrentInstance, inject } from "vue";
 
 type InjectType = 'root' | 'optional';
 
@@ -16,14 +16,16 @@ export function useInjector<T>(input: FunctionalStore<T> | symbol, type?: Inject
     name  = input.name;
   }  
 
+  const current = getCurrentInstance() as ProvideComponent;
+  const depends = current.provides[token] as T || inject<T>(token);
+
   switch(type) {
     default:      
-      const res = inject<T>(token)
-      if(res) return res;
+      if(depends) return depends;
       if(root) return root;
-      throw new Error(`hook函数${name}未在上层组件通过调用useProvider提供`);
+      throw new Error(`hook函数${name || token.description}未在上层组件通过调用useProvider提供`);
     case 'optional':
-      return inject<T>(token) || root || null;
+      return depends || root || null;
     case 'root':
       if(!root) func.root = func();      
       return func.root;

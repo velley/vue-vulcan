@@ -22,7 +22,7 @@
     <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
   </p>
 
-  <button @click="count++">count is: {{ count }}</button>
+  <!-- <button @click="count++">count is: {{ count }}</button> -->
   <p>
     Edit
     <code>components/HelloWorld.vue</code> to test hot module replacement.
@@ -34,17 +34,17 @@ import { defineProps } from 'vue';
 import { useRequest, useState } from '../../packages';
 
 const { msg } = defineProps({msg: String});
-const [count] = useState(1);
-const [res]   = useRequest(
-  '/index.php/api/common/loginIn',
-  {
-    method: 'POST',
-    data: {
-      login_id: "hrwx1",
-      login_password: "123456"
-    }
-  }
-);
+// const [count] = useState(1);
+// const [res]   = useRequest(
+//   '/index.php/api/common/loginIn',
+//   {
+//     method: 'POST',
+//     data: {
+//       login_id: "hrwx1",
+//       login_password: "123456"
+//     }
+//   }
+// );
 </script>
 
 <style scoped>

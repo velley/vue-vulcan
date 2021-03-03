@@ -5,7 +5,7 @@ import { CUSTOME_STORAGE } from "./token";
 
 interface StateOptions {
   reactive?: boolean;
-  storage?: 'session' | 'local' | null;
+  storage?: 'session' | 'local' | 'custome' | null;
   key?: string;
 }
 
@@ -19,17 +19,27 @@ export function useState<T>(
 ): [Ref<UnwrapRef<T>>, (param: UnwrapRef<T>) => void, (key?: keyof UnwrapRef<T>) => UnwrapRef<T> | UnwrapRef<T>[keyof UnwrapRef<T>] ] {
   
   let state = ref<T>(initital);
-  let storage = (options.storage === 'local' ? localStorage : sessionStorage) as unknown as CustomeStorageFunc<T>; 
+  let storage: CustomeStorageFunc<T>; 
   const customeStorage = useInjector<CustomeStorageFunc<T>>(CUSTOME_STORAGE, 'optional');
 
   onMounted( () => {
     if(!options.storage) return;
+    if(!options.key) throw new Error('当指定了storage的值时，你必须同时传入一个key值');
 
-    const key = options.key;    
-    if(!key) throw new Error('当指定了storage的值时，你必须同时传入一个key值')  
-    customeStorage && (storage = customeStorage);
+    switch(options.storage) {
+      case 'session':
+        storage = sessionStorage as unknown as CustomeStorageFunc<T>;
+        break;
+      case 'local':
+        storage = localStorage as unknown as CustomeStorageFunc<T>;
+        break;
+      case 'custome':
+        if(!customeStorage) throw new Error('请在顶层组件通过useProvide提供自定义storage api');
+        storage = customeStorage;
+        break;    
+    }   
 
-    const data = storage.getItem(key)
+    const data = storage.getItem(options.key)
     if(!data) {
       storage.setItem(options.key, data)
     } else {

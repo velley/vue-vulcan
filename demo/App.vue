@@ -4,15 +4,24 @@
 </template>
 
 <script lang="ts" setup>
-import { useProviders } from '../packages';
+import { onMounted } from 'vue';
+import { useInjector, useProviders, useRequest } from '../packages';
 import HelloWorld from './components/HelloWorld.vue';
 import { useCustomeRequest } from './hooks/useCustomeRequest'
 import { useHttpIntercept } from './hooks/useHttpIntercept';
+import { useString } from './hooks/useString';
 
 useProviders(
   // useCustomeRequest,
-  useHttpIntercept
-)
+  useHttpIntercept,
+  useString
+);
+
+useInjector(useString)
+
+useRequest('/index.php/api/common/loginIn',{data: {a:1, b:2}, method: 'POST'})
+
+
 
 </script>
 

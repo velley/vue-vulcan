@@ -13,6 +13,7 @@ export function useHttpIntercept(): HttpIntercept {
 
 	const responseIntercept = (response: HttpResponse) => {
 		checkCode(response.status);
+		console.log('res inte used')
 		return response.json().then(res => res.data);
 		// return new Promise( resolve => {
 		// 	console.log(response)

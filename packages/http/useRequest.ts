@@ -6,14 +6,6 @@ import { RequesterFunc, HttpIntercept, RequestOptions, RequestStatus } from "./d
 import { CUSTOME_REQUESTER, HTTP_INTERCEPT, HTTP_OPTIONS } from "./token";
 import { objectToUrlSearch } from "../utils/objectToUrlSearch";
 
-const defaultOptions: RequestOptions = {
-  auto: true,
-  pluck: ['data'],
-  method: 'GET',
-  baseUrl: '',
-  headers: {}  
-};
-
 export function useRequest<D>(
   url: string, 
   options?: RequestOptions
@@ -24,7 +16,14 @@ export function useRequest<D>(
   const globalOptions              = useInjector<RequestOptions>(HTTP_OPTIONS, 'optional');
   const customeRequester           = useInjector<RequesterFunc>(CUSTOME_REQUESTER, 'optional');
 
-  const myOptions = Object.assign(defaultOptions, globalOptions, options);
+  const myOptions: RequestOptions = Object.assign({
+    auto: true,
+    pluck: ['data'],
+    method: 'GET',
+    baseUrl: '',
+    data: {},
+    headers: {}  
+  }, globalOptions, options);
 
   const request = (newData: object = {}) => {
     setStatus('pending');
@@ -33,19 +32,19 @@ export function useRequest<D>(
       if(!intercept) {
         resolve(myOptions)
       } else {        
-        intercept?.requestIntercept({ ...myOptions, url })
+        intercept?.requestIntercept({ ...myOptions, path: url })
           .then( reqOptions => resolve(reqOptions), err => {reject(err); setStatus('failed')} );
       }      
     }).then( reqOptions => {           
-      let f_url = myOptions.baseUrl + url;
-      let data = Object.assign(myOptions.data, newData)
+      let f_url = reqOptions.baseUrl + url;
+      let data = Object.assign(reqOptions.data, newData)
       if(['GET', 'HEAD'].includes(reqOptions.method)) { 
         const searchKeys = `?${objectToUrlSearch(data)}`;
         f_url += searchKeys;        
       } else {
         !customeRequester && (reqOptions.body = JSON.stringify(data))
       }      
-      myOptions.data = data;
+      reqOptions.data = data;
       return req(f_url, reqOptions);
     }).then( res => {
       if(intercept && intercept?.responseIntercept) {  

@@ -1,6 +1,6 @@
 {
   "name": "vue-vulcan",
-  "version": "0.2.2",
+  "version": "0.2.9",
   "files": ["dist"],
   "main": "dist/vue-vulcan.umd.js",
   "module": "dist/vue-vulcan.es.js",

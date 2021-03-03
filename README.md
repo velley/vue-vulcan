@@ -4,7 +4,7 @@
 ### <center><button>license</button><button>MIT</button></center>
 ***
 ### <center>设计理念</center>
-#### 本方案充分将vue3组合函数的特性与依赖注入思想相结合，形成了一套较为工程化的开发范式，并能在一定程度上替代vuex等状态管理方案。
+#### 本方案将vue3组合函数的特性与依赖注入思想充分结合，可以为项目提供一套较为工程化的开发范式，并能一定程度上替代vuex等状态管理方案。
 #### 参考文章[https://zhuanlan.zhihu.com/p/351519484]
 ***
 ### <center>核心API</center>
@@ -92,4 +92,5 @@ import { useInjector } from 'vue-vulcan';
 		}
 	}
 ```
-#### 该情况下，你必须手动调用getBookList方法才会触发请求。请求成功后，bookList会自动获得响应值。
+#### 该情况下，你必须手动调用getBookList方法才会触发请求。成功后，bookList会自动获得请求响应值。
+#### 此外，可以通过依赖注入对请求实现拦截功能

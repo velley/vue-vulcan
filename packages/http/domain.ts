@@ -14,7 +14,7 @@ export interface RequesterFunc {
 
 export interface RequestOptions<B = any> {
   baseUrl?: string;
-  url?: string;
+  path?: string;
   body?: B;
   data?: B;
   auto?: boolean;
