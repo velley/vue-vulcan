@@ -9,11 +9,14 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "declaration": true, // 生成定义文件
     "declarationDir": "dist/types",
     "lib": ["esnext", "dom"],
     "types": ["vite/client"],
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["demo/**/*.ts", "demo/**/*.d.ts", "demo/**/*.tsx", "demo/**/*.vue", "packages/**/*.ts"]
+  "include": ["demo", "packages"]
 }

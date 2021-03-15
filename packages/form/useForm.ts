@@ -1,5 +1,6 @@
 import { reactive, Ref, toRaw, UnwrapRef } from "vue";
-import { useRequest, RequestStatus } from "../http";
+import { useRequest } from '../http/useRequest';
+import { RequestStatus } from "../http/domain";
 
 interface FormOption {
   loadingTip?: string;

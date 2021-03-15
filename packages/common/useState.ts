@@ -1,4 +1,4 @@
-import { onMounted, Ref, ref, UnwrapRef } from "vue";
+import { onMounted, Ref, ref, readonly, UnwrapRef, DeepReadonly } from "vue";
 import { useInjector } from "../ioc/useInjector";
 import { CustomeStorageFunc } from "./interface";
 import { CUSTOME_STORAGE } from "./token";
@@ -16,7 +16,11 @@ const defaultOpt: StateOptions = {
 export function useState<T>(
   initital: T, 
   options = defaultOpt
-): [Ref<UnwrapRef<T>>, (param: UnwrapRef<T>) => void, (key?: keyof UnwrapRef<T>) => UnwrapRef<T> | UnwrapRef<T>[keyof UnwrapRef<T>] ] {
+): [
+  DeepReadonly< Ref<UnwrapRef<T>> >, 
+  (param: UnwrapRef<T>) => void, 
+  (key?: keyof UnwrapRef<T>) => UnwrapRef<T> | UnwrapRef<T>[keyof UnwrapRef<T>]
+] {
   
   let state = ref<T>(initital);
   let storage: CustomeStorageFunc<T>; 
@@ -34,7 +38,7 @@ export function useState<T>(
         storage = localStorage as unknown as CustomeStorageFunc<T>;
         break;
       case 'custome':
-        if(!customeStorage) throw new Error('请在顶层组件通过useProvide提供自定义storage api');
+        if(!customeStorage) throw new Error('请在顶层组件通过useProvider提供自定义storage api');
         storage = customeStorage;
         break;    
     }   
@@ -57,5 +61,5 @@ export function useState<T>(
     return state.value[key]
   }
 
-  return [state, setState, getValue]
+  return [readonly(state), setState, getValue]
 }
