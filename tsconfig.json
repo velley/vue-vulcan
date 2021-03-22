@@ -18,5 +18,5 @@
     "types": ["vite/client"],
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["demo", "packages"]
+  "include": ["demo", "packages", "dist"]
 }

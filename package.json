@@ -14,9 +14,9 @@
     }
   },
   "scripts": {
-    "dev": "vite",    
-    "serve": "vite preview",
-    "build": "rollup -c rollup.config.ts"
+    "demo": "vite",        
+    "build": "rollup -c rollup.config.ts",
+    "build:watch": "rollup -c rollup.config.ts -w"
   },
   "dependencies": {
     "axios": "^0.21.1",

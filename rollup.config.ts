@@ -18,7 +18,7 @@ export default {
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external: [/^vue/],
   watch: {
-    include: 'src/**',
+    include: 'packages/**',
   },
   plugins: [
     // Allow json resolution
